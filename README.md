@@ -31,4 +31,7 @@ all of the necessary dependencies to run Bazel.
 The Bazel version that is installed can be modified by changing the
 `bazel_version` variable in [playbook.yml](https://github.com/skippyPeanutButter/vagrant-bazel/blob/master/playbook.yml#L4).
 
+> Warning: dependencies may be different if you are selecting a bazel version
+different from the one originally specified in the playbook.yml
+
 See the list of Bazel releases [here](https://github.com/bazelbuild/bazel/releases)
