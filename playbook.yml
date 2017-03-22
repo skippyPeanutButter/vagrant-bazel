@@ -1,0 +1,37 @@
+---
+- hosts: all
+  vars:
+    bazel_version: 0.4.5
+    bazel_url: 'https://github.com/bazelbuild/bazel/releases/download/{{ bazel_version }}/bazel-{{ bazel_version }}-installer-linux-x86_64.sh'
+
+  tasks:
+    - name: 'Add apt repository'
+      apt_repository:
+        repo: 'ppa:openjdk-r/ppa'
+        state: 'present'
+      become: true
+
+    - name: 'Install required packages'
+      apt:
+        name: '{{ item }}'
+        state: 'present'
+        update_cache: 'yes'
+      become: true
+      with_items: ['pkg-config', 'zip', 'g++', 'zlib1g-dev', 'unzip', 'openjdk-8-jdk']
+
+    - name: 'Download Bazel {{ bazel_version }}'
+      get_url:
+        url: '{{ bazel_url }}'
+        dest: '{{ ansible_env.HOME }}/bazel-{{ bazel_version }}-installer-linux-x86_64.sh'
+
+    - name: 'Make shell script executable'
+      file:
+        path: '{{ ansible_env.HOME }}/bazel-{{ bazel_version }}-installer-linux-x86_64.sh'
+        owner: 'vagrant'
+        group: 'vagrant'
+        mode: 0755
+
+    - name: 'Install bazel'
+      shell: '{{ ansible_env.HOME }}/bazel-{{ bazel_version }}-installer-linux-x86_64.sh --user'
+      args:
+        executable: '/bin/bash'
